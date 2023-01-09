@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else {
                     try {
-                        //   valueEdtToCurrently.toDouble()
+
                         valueToRateDouble = valueEdtToCurrently.toDouble()
                         valueFromRateDouble = valueFromRate.toDouble()
                     } catch (e: NumberFormatException) {
