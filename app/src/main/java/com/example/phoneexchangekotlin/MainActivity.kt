@@ -10,9 +10,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.phoneexchangekotlin.databinding.ActivityMainBinding
+import com.example.phoneexchangekotlin.model.CurrencyRate
+import com.example.phoneexchangekotlin.model.CurrencyRateKey
 import com.example.phoneexchangekotlin.viewModel.CurrencyViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -34,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         eventFromSpinner()
         eventToSpinner()
         eventFromEditText()
+        viewModelCurrency.getLocalRateKey()
+        viewModelCurrency.getLocalRateValue()
+        observerLocalRateKey()
+        observerLocalRateValue()
 
     }
 
@@ -47,6 +55,44 @@ class MainActivity : AppCompatActivity() {
             arrayListValues = ArrayList(setValues)
             updateRateName(arrayListKey)
             updateRateValue(arrayListValues)
+            insertRateKey(arrayListKey)
+            insertCurrencyRate(arrayListValues)
+
+        }
+    }
+
+    private fun insertRateKey(arrayListKey: ArrayList<String>) {
+        val rateKey = CurrencyRateKey(
+            arrayListKey[0]
+            ,arrayListKey[1],
+            arrayListKey[2],
+            arrayListKey[3],
+            arrayListKey[4],
+            arrayListKey[5],
+            arrayListKey[6],
+            arrayListKey[7],
+            arrayListKey[8],
+            arrayListKey[9],
+        )
+        this.lifecycleScope.launch {
+            viewModelCurrency.getInsertCurrencyKey(rateKey)
+        }
+    }
+    private fun insertCurrencyRate(arrayList: ArrayList<Double>){
+        val currencyRate = CurrencyRate(
+            arrayList[0],
+            arrayList[1],
+            arrayList[2],
+            arrayList[3],
+            arrayList[4],
+            arrayList[5],
+            arrayList[6],
+            arrayList[7],
+            arrayList[8],
+            arrayList[9],
+        )
+        this.lifecycleScope.launch{
+            viewModelCurrency.getInsertCurrencyValue(currencyRate)
         }
     }
 
@@ -147,20 +193,13 @@ class MainActivity : AppCompatActivity() {
                 val valueFromRate = mainBinding.includeMain.currencyFromEdt.text.toString()
                 var valueFromRateDouble: Double
                 var valueToRateDouble: Double
-                if (valueFromRate == null) {
-                    valueFromRateDouble = 1.0
+                try {
+
                     valueToRateDouble = valueEdtToCurrently.toDouble()
-
-                }
-                else {
-                    try {
-
-                        valueToRateDouble = valueEdtToCurrently.toDouble()
-                        valueFromRateDouble = valueFromRate.toDouble()
-                    } catch (e: NumberFormatException) {
-                        valueToRateDouble = 0.0
-                        valueFromRateDouble = 0.0
-                    }
+                    valueFromRateDouble = valueFromRate.toDouble()
+                } catch (e: NumberFormatException) {
+                    valueToRateDouble = 0.0
+                    valueFromRateDouble = 0.0
                 }
 
                 result = calacutorRate(valueFromRateDouble, valueToRateDouble, i1)
@@ -175,4 +214,49 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
+    @SuppressLint("LogNotTimber")
+   private fun observerLocalRateKey() {
+        viewModelCurrency.getLocalRateKeyLiveData().observe(this) { listRate ->
+            val arrayList:ArrayList<String> = ArrayList()
+            for (item in listRate){
+                arrayList.add(item.usd)
+                arrayList.add(item.aed)
+                arrayList.add(item.afn)
+                arrayList.add(item.all)
+                arrayList.add(item.ars)
+                arrayList.add(item.amd)
+                arrayList.add(item.ang)
+                arrayList.add(item.aoa)
+                arrayList.add(item.awg)
+                arrayList.add(item.aud)
+            }
+            updateRateName(arrayList)
+            //updateRateValue(arrayListValues)
+        }
+
+    }
+    @SuppressLint("LogNotTimber")
+    private fun observerLocalRateValue(){
+        viewModelCurrency.getLocalRateLiveData().observe(this){listRate->
+            val arrayList:ArrayList<Double> = ArrayList()
+            for (item in listRate){
+                arrayList.add(item.usd)
+                arrayList.add(item.aed)
+                arrayList.add(item.afn)
+                arrayList.add(item.all)
+                arrayList.add(item.ars)
+                arrayList.add(item.amd)
+                arrayList.add(item.ang)
+                arrayList.add(item.aoa)
+                arrayList.add(item.awg)
+                arrayList.add(item.aud)
+            }
+
+            Log.i("arrayList1","$arrayList")
+            updateRateValue(arrayList)
+
+        }
+    }
+
+
 }

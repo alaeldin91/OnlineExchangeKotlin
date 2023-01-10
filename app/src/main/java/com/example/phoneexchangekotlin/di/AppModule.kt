@@ -1,5 +1,8 @@
 package com.example.phoneexchangekotlin.di
 
+import android.app.Application
+import androidx.room.Room
+import com.example.phoneexchangekotlin.db.CurrencyDb
 import com.example.phoneexchangekotlin.network.ApiService
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -14,9 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     private const val baseUrl = "https://open.er-api.com/v6/"
-
     @Provides
     @Singleton
     fun provideMealApiService(): ApiService {
@@ -29,4 +30,6 @@ object AppModule {
         ).addCallAdapterFactory(RxJava3CallAdapterFactory.create()).build()
             .create(ApiService::class.java)
     }
+
+
 }

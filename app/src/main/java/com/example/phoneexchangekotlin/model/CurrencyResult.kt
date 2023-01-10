@@ -1,4 +1,4 @@
-package com.example.phoneexchangekotlin.nodel
+package com.example.phoneexchangekotlin.model
 
 import com.google.gson.annotations.SerializedName
 

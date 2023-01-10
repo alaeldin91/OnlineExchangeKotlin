@@ -1,6 +1,6 @@
 package com.example.phoneexchangekotlin.network
 
-import com.example.phoneexchangekotlin.nodel.CurrencyResult
+import com.example.phoneexchangekotlin.model.CurrencyResult
 import retrofit2.Call
 import retrofit2.http.GET
 

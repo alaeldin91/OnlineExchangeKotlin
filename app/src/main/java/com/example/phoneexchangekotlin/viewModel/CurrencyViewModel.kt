@@ -2,9 +2,12 @@ package com.example.phoneexchangekotlin.viewModel
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.phoneexchangekotlin.nodel.CurrencyResult
+import com.example.phoneexchangekotlin.model.CurrencyRate
+import com.example.phoneexchangekotlin.model.CurrencyRateKey
+import com.example.phoneexchangekotlin.model.CurrencyResult
 import com.example.phoneexchangekotlin.repository.CurrencyRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
@@ -13,12 +16,19 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class CurrencyViewModel @Inject constructor(repository: CurrencyRepository) : ViewModel() {
+class CurrencyViewModel @Inject constructor(
+    repository: CurrencyRepository
+) : ViewModel() {
     private var repository: CurrencyRepository
     private var currencyRateMap: MutableLiveData<HashMap<String, Double>> = MutableLiveData()
+    private var currencyRateValueLocal: LiveData<List<CurrencyRate>>
+    private var currencyRateKeyLocal: LiveData<List<CurrencyRateKey>>
+
 
     init {
         this.repository = repository
+        this.currencyRateValueLocal = repository.getRateValue()
+        this.currencyRateKeyLocal = repository.getRateKey()
     }
 
     fun getCurrencyRate() {
@@ -58,4 +68,28 @@ class CurrencyViewModel @Inject constructor(repository: CurrencyRepository) : Vi
         return currencyRateMap
     }
 
+    suspend fun getInsertCurrencyKey(currencyRateKey: CurrencyRateKey) {
+        this.repository.insertCurrencyRateKey(currencyRateKey)
+    }
+
+    fun getLocalRateLiveData(): LiveData<List<CurrencyRate>> {
+        return repository.getRateValue()
+    }
+
+    fun getLocalRateValue() {
+        this.currencyRateValueLocal = repository.getRateValue()
+    }
+
+    fun getLocalRateKeyLiveData(): LiveData<List<CurrencyRateKey>> {
+        return repository.getRateKey()
+    }
+
+    fun getLocalRateKey() {
+        this.currencyRateKeyLocal = repository.getRateKey()
+    }
+
+    suspend fun getInsertCurrencyValue(currencyRate: CurrencyRate) {
+        this.repository.insertCurrencyRateValue(currencyRate)
+
+    }
 }

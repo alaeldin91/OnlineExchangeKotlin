@@ -1,8 +1,11 @@
-package com.example.phoneexchangekotlin.nodel
+package com.example.phoneexchangekotlin.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-
-data class CurrencyRate(
+@Entity(tableName = "currencyRate")
+ class CurrencyRate(
+    @PrimaryKey(autoGenerate = false)
     @SerializedName("USD")
     var usd: Double,
     @SerializedName("AED")
